@@ -49,13 +49,6 @@ def cat_summary(dataframe, col_name):
     
     print("###################################")
 
-print(cat_summary(df, "master_id"))
-print(cat_summary(df, "order_channel"))
-print(cat_summary(df, "last_order_channel"))
-print(cat_summary(df, "first_order_date"))
-print(cat_summary(df, "last_order_date"))
-print(cat_summary(df, "last_order_date_online"))
-print(cat_summary(df, "last_order_date_offline"))
 
 #Sayısal Değişken Analizi
 def num_summary(dataframe, num_name):
@@ -63,14 +56,23 @@ def num_summary(dataframe, num_name):
     print(dataframe[num_name].describe(quantiles).T)
     print("###################################")
 
-print(num_summary(df, "order_num_total_ever_online"))
-print(num_summary(df, "order_num_total_ever_offline"))
-print(num_summary(df, "customer_value_total_ever_online"))
-print(num_summary(df, "customer_value_total_ever_offline"))
 
 
 
 
+def printingCat_cols(dataframe, cat_cols):
+    for col in cat_cols:
+        cat_summary(dataframe, col)
+
+printingCat_cols(df, cat_cols)
+
+
+def printingNum_cols(dataframe, num_cols):
+    for col in num_cols:
+        num_summary(dataframe, col)
+
+printingNum_cols(df, num_cols)
+        
 
 #Online ve Offline Toplam Harcama Karşılaştırması
 online = df["customer_value_total_ever_online"].sum()
@@ -78,7 +80,7 @@ offline = df["customer_value_total_ever_offline"].sum()
 
 plt.bar(["Online","Offline"], [online, offline])
 plt.title("Online vs Offline Toplam Harcama")
-plt.show()
+# plt.show()
 
 
 
@@ -91,4 +93,13 @@ df["total_value"] = df["customer_value_total_ever_online"] + df["customer_value_
 #Korelasyon Analizi
 corr = df[num_cols].corr()
 sns.heatmap(corr, annot=True, cmap="RdBu")
+plt.show()
+
+
+
+
+corr2 = df[cat_cols].apply(lambda x: pd.factorize(x)[0]).corr()
+print("Kategorik Değişkenler Korelasyon Tablosu:")
+print(corr2)
+sns.heatmap(corr2, annot=True, cmap="RdBu")
 plt.show()
